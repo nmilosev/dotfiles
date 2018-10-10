@@ -1,8 +1,5 @@
 call plug#begin()
-Plug 'scrooloose/nerdtree'
 Plug 'powerline/powerline'
-Plug 'vim-syntastic/syntastic'
-Plug 'Valloric/YouCompleteMe'
 Plug 'kien/ctrlp.vim'
 call plug#end()
 
@@ -18,7 +15,5 @@ set t_Co=256
 set number
 set ruler
 
-let python_highlight_all=1
 syntax on
 
-let g:ycm_autoclose_preview_window_after_completion=1
