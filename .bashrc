@@ -5,35 +5,30 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# User specific environment
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
+then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+export PATH
+
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
 # User specific aliases and functions
-alias vpn='sudo sysctl net.netfilter.nf_conntrack_helper=1'
-export EDITOR='vim'
-source /usr/share/git-core/contrib/completion/git-prompt.sh
-export PS1='\w\[\033[0;32m\]$(__git_ps1)\[\033[0;32m\]\[\033[0m\033[0;32m\] \$\[\033[0m\033[0;32m\] \[\033[0m\]'
+alias nvidia-run='__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia "$@"'
+# Set font when running in console
+if [ $TERM == linux ]; then
+    /bin/setfont /usr/share/consolefonts/Lat2-Terminus32x16.psf.gz
+fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-alias ledson='sudo tee /sys/devices/LNXSYSTM:00/LNXSYBUS:00/TOS1900:00/kbd_backlight_mode <<< 8 && sudo tee /sys/class/leds/toshiba\:\:illumination/brightness <<< 255'
-alias ledsoff='sudo tee /sys/devices/LNXSYSTM:00/LNXSYBUS:00/TOS1900:00/kbd_backlight_mode <<< 16 && sudo tee /sys/class/leds/toshiba\:\:illumination/brightness <<< 0'
+alias nvidia-deactivate="sudo mv /etc/modprobe.d/blacklist.conf.inactive /etc/modprobe.d/blacklist.conf && echo 'nvidia deactivated (blocked), reboot'"
+alias nvidia-activate="sudo mv /etc/modprobe.d/blacklist.conf /etc/modprobe.d/blacklist.conf.inactive && echo 'nvidia active, reboot'"
+alias vimode="set -o vi && bind 'set show-mode-in-prompt on' && bind 'set editing-mode vi'"
+alias fujitsu="xrandr --output eDP-1 --auto --pos 3840x0  --output DP-1 --scale 2.0x2.0 --auto --pos 0x0 --fb 7680x2160 && xrandr --output eDP-1 --scale 0.9999x0.9999"
+export EDITOR=vim
+alias nvidia-full-off="sudo bash -c 'modprobe acpi_call && /opt/turn_off_gpu.sh'"
 
-alias cuda='export LD_LIBRARY_PATH=/usr/lib64/nvidia/:/usr/local/cuda-8.0/lib64'
-
-alias setclip="xclip -selection c"
-alias getclip="xclip -selection c -o"
-
-#projekti
-
-alias sac="cd ~/Projects/biosense/SmartAgroClaim && git status"
-
-alias nvidiareload="su -c 'echo 1 > /sys/bus/pci/devices/0000:01:00.0/remove && echo 1 > /sys/bus/pci/rescan'"
-alias optirun="optirun -b primus"
-
-export CUDA_HOME=$HOME/cuda-dummy
-. /home/nmilosev/miniconda3/etc/profile.d/conda.sh
-
-alias python=python3
+shopt -s histappend
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
