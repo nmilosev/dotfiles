@@ -3,11 +3,10 @@ Plug 'kien/ctrlp.vim'
 Plug 'preservim/nerdtree'
 Plug 'morhetz/gruvbox'
 Plug 'preservim/nerdcommenter'
-Plug 'davidhalter/jedi-vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
-Plug 'dense-analysis/ale'
 Plug 'morhetz/gruvbox'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 " Some basic stuff
@@ -23,12 +22,9 @@ noremap <F13> :call NERDComment(0,"toggle")<CR>
 " So that NERDCommenter can automatically decide how to comment a particular filetype
 filetype plugin on
 
-let jedi#show_call_signatures = 0
-let jedi#documentation_command = "<F10>"
 autocmd FileType python setlocal completeopt-=preview
 
 set mouse=a
-let g:jedi#goto_command = "<C-LeftMouse>"
 map <C-b> <C-LeftMouse>
 
 set updatetime=100
@@ -102,3 +98,19 @@ ca tn tabnew
 ca th tabp
 ca tl tabn
 ca pi Pyimport
+
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction'
+      \ },
+      \ }
