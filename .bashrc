@@ -16,19 +16,34 @@ export PATH
 # export SYSTEMD_PAGER=
 
 # User specific aliases and functions
-alias nvidia-run='__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia "$@"'
-# Set font when running in console
-if [ $TERM == linux ]; then
-    /bin/setfont /usr/share/consolefonts/Lat2-Terminus32x16.psf.gz
+if [ -d ~/.bashrc.d ]; then
+	for rc in ~/.bashrc.d/*; do
+		if [ -f "$rc" ]; then
+			. "$rc"
+		fi
+	done
 fi
 
+unset rc
 
-alias nvidia-deactivate="sudo mv /etc/modprobe.d/blacklist.conf.inactive /etc/modprobe.d/blacklist.conf && echo 'nvidia deactivated (blocked), reboot'"
-alias nvidia-activate="sudo mv /etc/modprobe.d/blacklist.conf /etc/modprobe.d/blacklist.conf.inactive && echo 'nvidia active, reboot'"
-alias vimode="set -o vi && bind 'set show-mode-in-prompt on' && bind 'set editing-mode vi'"
-alias fujitsu="xrandr --output eDP-1 --auto --pos 3840x0  --output DP-1 --scale 2.0x2.0 --auto --pos 0x0 --fb 7680x2160 && xrandr --output eDP-1 --scale 0.9999x0.9999"
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+alias condaenv="conda shell.bash hook"
+#__conda_setup="$('/usr/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+#     eval "$__conda_setup"
+# else
+#    if [ -f "/usr/etc/profile.d/conda.sh" ]; then
+#        . "/usr/etc/profile.d/conda.sh"
+#    else
+#        export PATH="/usr/bin:$PATH"
+#    fi
+#fi
+#unset __conda_setup
+# <<< conda initialize <<<
+
 export EDITOR=vim
-alias nvidia-full-off="sudo bash -c 'modprobe acpi_call && /opt/turn_off_gpu.sh'"
+alias vimode="set -o vi && bind 'set show-mode-in-prompt on' && bind 'set editing-mode vi'"
 
 shopt -s histappend
 PROMPT_COMMAND="history -a;$PROMPT_COMMAND"

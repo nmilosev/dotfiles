@@ -1,12 +1,13 @@
 call plug#begin()
 Plug 'kien/ctrlp.vim'
 Plug 'preservim/nerdtree'
-Plug 'morhetz/gruvbox'
 Plug 'preservim/nerdcommenter'
 Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
-Plug 'morhetz/gruvbox'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'preservim/tagbar'
+Plug 'itchyny/vim-cursorword'
+Plug 'sainnhe/everforest'
 call plug#end()
 
 " Some basic stuff
@@ -15,7 +16,9 @@ set showmatch
 syntax on
 
 set <A-1>=`
+set <A-2>=\
 nmap <A-1> :NERDTreeToggle<CR>
+nmap <A-2> :TagbarToggle<CR>
 
 set <F13>=
 noremap <F13> :call NERDComment(0,"toggle")<CR>
@@ -86,25 +89,38 @@ set list listchars=tab:»·,trail:·,nbsp:·
 " Use one space, not two, after punctuation.
 set nojoinspaces
 
-syntax on
-
 autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
 autocmd FileType python imap <buffer> <F9> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
 
-autocmd vimenter * ++nested colorscheme gruvbox
+"autocmd vimenter * ++nested colorscheme everforest 
+"set background=dark
+
+if has('termguicolors')
+    set termguicolors
+endif
+
+" For dark version.
 set background=dark
+
+" Set contrast.
+" This configuration option should be placed before `colorscheme everforest`.
+" Available values: 'hard', 'medium'(default), 'soft'
+let g:everforest_background = 'hard'
+
+colorscheme everforest
 
 ca tn tabnew
 ca th tabp
 ca tl tabn
 ca pi Pyimport
+ca tb TagbarToggle
 
 function! CocCurrentFunction()
     return get(b:, 'coc_current_function', '')
 endfunction
 
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'everforest',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
