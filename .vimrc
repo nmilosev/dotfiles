@@ -12,6 +12,7 @@ Plug 'preservim/tagbar'
 Plug 'itchyny/vim-cursorword'
 Plug 'sainnhe/everforest'
 Plug 'mileszs/ack.vim'
+Plug 'tpope/vim-dispatch'
 call plug#end()
 
 " Some basic stuff
@@ -20,7 +21,7 @@ set showmatch
 syntax on
 
 set <A-1>=`
-set <A-2>=\
+set <A-2>=^
 nmap <A-1> :NERDTreeToggle<CR>
 nmap <A-2> :TagbarToggle<CR>
 
@@ -199,3 +200,4 @@ let g:coc_disable_startup_warning = 1
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
+let g:ack_use_dispatch = 1
