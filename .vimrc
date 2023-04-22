@@ -22,8 +22,8 @@ syntax on
 
 set <A-1>=~
 set <A-2>=^
-nmap <A-1> :NERDTreeToggle<CR>
-nmap <A-2> :TagbarToggle<CR>
+nmap <silent> <A-1> :NERDTreeToggle %<CR>
+nmap <silent> <A-2> :TagbarToggle<CR>
 
 set <F13>=
 noremap <F13> :call nerdcommenter#Comment(0,"toggle")<CR>
