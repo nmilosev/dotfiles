@@ -20,7 +20,7 @@ set number
 set showmatch
 syntax on
 
-set <A-1>=`
+set <A-1>=~
 set <A-2>=^
 nmap <A-1> :NERDTreeToggle<CR>
 nmap <A-2> :TagbarToggle<CR>
@@ -201,3 +201,5 @@ if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 let g:ack_use_dispatch = 1
+set undofile " Maintain undo history between sessions
+set undodir=~/.vim/undodir
