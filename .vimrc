@@ -1,18 +1,27 @@
 " vim-plug setup
 " curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
+set encoding=utf-8
+
 call plug#begin()
 Plug 'kien/ctrlp.vim'
 Plug 'preservim/nerdtree'
 Plug 'preservim/nerdcommenter'
 Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'preservim/tagbar'
 Plug 'itchyny/vim-cursorword'
-Plug 'sainnhe/everforest'
 Plug 'mileszs/ack.vim'
 Plug 'tpope/vim-dispatch'
+Plug 'Yggdroot/indentLine'
+Plug 'wincent/vim-clipper'
+Plug 'wellle/context.vim'
+Plug 'madox2/vim-ai'
+Plug 'haishanh/night-owl.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 call plug#end()
 
 " Some basic stuff
@@ -20,10 +29,8 @@ set number
 set showmatch
 syntax on
 
-set <A-1>=~
-set <A-2>=^
-nmap <silent> <A-1> :NERDTreeToggle %<CR>
-nmap <silent> <A-2> :TagbarToggle<CR>
+nmap <silent> <C-T> :NERDTreeToggle<CR>
+nmap <silent> <C-Y> :TagbarToggle<CR>
 
 set <F13>=
 noremap <F13> :call nerdcommenter#Comment(0,"toggle")<CR>
@@ -35,7 +42,7 @@ autocmd FileType python setlocal completeopt-=preview
 set mouse=a
 map <C-b> <C-LeftMouse>
 
-set updatetime=100
+set updatetime=50
 
 set foldmethod=indent
 set foldlevelstart=99
@@ -82,86 +89,33 @@ augroup vimrcEx
   autocmd BufRead,BufNewFile vimrc.local set filetype=vim
 augroup END
 
-" Softtabs, 2 spaces
 set tabstop=4
 set shiftwidth=4
 set shiftround
 set expandtab
 
 " Display extra whitespace
-set list listchars=tab:»·,trail:·,nbsp:·
+set listchars=tab:▸\ ,trail:·
+set list
 
 " Use one space, not two, after punctuation.
 set nojoinspaces
 
-autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
-autocmd FileType python imap <buffer> <F9> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
-
-"autocmd vimenter * ++nested colorscheme everforest 
-"set background=dark
 
 if has('termguicolors')
     set termguicolors
 endif
 
-" For dark version.
 set background=dark
 
-" Set contrast.
-" This configuration option should be placed before `colorscheme everforest`.
-" Available values: 'hard', 'medium'(default), 'soft'
-let g:everforest_background = 'hard'
-
-colorscheme everforest
+colorscheme night-owl
 
 ca tn tabnew
 ca th tabp
 ca tl tabn
 ca pi Pyimport
 ca tb TagbarToggle
-
-function! CocCurrentFunction()
-    return get(b:, 'coc_current_function', '')
-endfunction
-
-
-let g:lightline = {
-      \ 'colorscheme': 'everforest',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'currentfunction', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'cocstatus': 'coc#status',
-      \   'currentfunction': 'CocCurrentFunction',
-      \ },
-      \ }
-
-
-autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
-
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
-" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
-" delays and poor user experience
-set updatetime=300
+ca Format LspDocumentFormat
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved
@@ -172,30 +126,10 @@ set signcolumn=yes
 " no select by `"suggest.noselect": true` in your configuration file
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackspace() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
 function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
-
-" Use <c-space> to trigger completion
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-let g:coc_disable_startup_warning = 1
 
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
@@ -203,3 +137,48 @@ endif
 let g:ack_use_dispatch = 1
 set undofile " Maintain undo history between sessions
 set undodir=~/.vim/undodir
+
+let g:ClipperAuto=0
+let g:vim_json_conceal=0
+
+let initial_prompt =<< trim END
+>>> system
+
+When outputting source code, do not use markdown formatting.
+
+END
+let g:vim_ai_token_file_path = '~/.vim/gemini.token'
+let g:vim_ai_chat = {
+\  "engine": "chat",
+\  "options": {
+\    "endpoint_url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+\    "enable_auth": 1,
+\    "model": "gemini-1.5-flash",
+\    "max_tokens": 0,
+\    "request_timeout": 20,
+\    "temperature": 0.2,
+\    "selection_boundary": "",
+\    "initial_prompt": initial_prompt,
+\  },
+\  "ui": {
+\    "code_syntax_enabled": 0,
+\    "populate_options": 0,
+\    "open_chat_command": "preset_right",
+\    "scratch_buffer_keep_open": 0,
+\    "paste_mode": 1
+\  },
+\}
+let g:vim_ai_complete = g:vim_ai_chat
+let g:vim_ai_edit = g:vim_ai_chat
+
+let g:lsp_diagnostics_virtual_text_enabled = 0
+let g:lsp_diagnostics_echo_cursor = 1
+let g:lsp_diagnostics_echo_delay = 10
+let g:lsp_diagnostics_float_cursor = 0
+let g:lsp_diagnostics_float_delay = 1000
+let g:lsp_diagnostics_highlights_enabled = 0
+let g:lsp_document_highlight_enabled = 0
+imap <c-space> <Plug>(asyncomplete_force_refresh)
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
